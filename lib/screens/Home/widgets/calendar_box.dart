@@ -55,6 +55,7 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
               alignment: Alignment.center,
               child: TableCalendar(
                 events: widget.events,
+                calendarController: widget.calendarController,
                 initialCalendarFormat: CalendarFormat.month,
                 headerStyle: HeaderStyle(
                   centerHeaderTitle: true,
@@ -66,7 +67,6 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
                 weekendDays: const [DateTime.friday, DateTime.saturday],
                 onDaySelected: (DateTime date, List events, List holidays) {
                   setState(() {
-                    // widget.selectedEvents = events;
                     widget.calendarController.setSelectedDay(date);
                   });
                 },
@@ -80,8 +80,6 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
                   outsideWeekendDayBuilder: (context, date, events) => DayBuilderWidget(date: date, dayType: 'weekend'),
                   outsideHolidayDayBuilder: (context, date, events) => DayBuilderWidget(date: date, dayType: 'outside'),
                   markersBuilder: (context, date, events, selectedEvents) {
-                    print(events);
-                    print(selectedEvents);
                     return [
                       Positioned(
                         left: 0,
@@ -90,17 +88,12 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
                           width: defaultSize * 1.8,
                           height: defaultSize * 1.8,
                           child: Center(child: Text(events.length.toString(), style: TextStyle(color: Colors.white))),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(defaultSize),
-                            // border: Border.all(color: Colors.white)),
-                          ),
+                          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(defaultSize)),
                         ),
                       ),
                     ];
                   },
                 ),
-                calendarController: widget.calendarController,
               ),
             ),
           ],
