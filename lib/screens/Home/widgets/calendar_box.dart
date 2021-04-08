@@ -8,13 +8,13 @@ class CalendarBoxWidget extends StatefulWidget {
   const CalendarBoxWidget({
     Key key,
     @required this.calendarController,
-    @required this.events,
-    @required this.selectedEvents,
+    @required this.periods,
+    @required this.updateSelectedDayPeriod,
   }) : super(key: key);
 
   final CalendarController calendarController;
-  final Map<DateTime, List<dynamic>> events;
-  final List<dynamic> selectedEvents;
+  final Map<DateTime, List<dynamic>> periods;
+  final Function updateSelectedDayPeriod;
 
   @override
   _CalendarBoxWidgetState createState() => _CalendarBoxWidgetState();
@@ -37,15 +37,15 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
               children: [
                 Text(
                   '${weekDays[1][today.weekday - 1]}DAY',
-                  style: TextStyle(fontSize: defaultSize * 1.8, color: primaryColor),
+                  style: TextStyle(fontFamily: 'FiraCode', fontSize: defaultSize * 1.8, color: primaryColor),
                 ),
                 Text(
                   today.day.toString().padLeft(2, '0'),
-                  style: TextStyle(fontSize: defaultSize * 7.5, color: primaryColor),
+                  style: TextStyle(fontFamily: 'FiraCode', fontSize: defaultSize * 7.5, color: primaryColor),
                 ),
                 Text(
                   '${months[0][today.month - 1]}, ${today.year}',
-                  style: TextStyle(fontSize: defaultSize * 1.8, color: primaryColor),
+                  style: TextStyle(fontFamily: 'FiraCode', fontSize: defaultSize * 1.8, color: primaryColor),
                 )
               ],
             ),
@@ -54,7 +54,7 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
               height: defaultSize * 34,
               alignment: Alignment.center,
               child: TableCalendar(
-                events: widget.events,
+                events: widget.periods,
                 calendarController: widget.calendarController,
                 initialCalendarFormat: CalendarFormat.month,
                 headerStyle: HeaderStyle(
@@ -65,16 +65,17 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
                 daysOfWeekStyle: DaysOfWeekStyle(dowTextBuilder: (weekDay, locale) => weekDays[0][weekDay.weekday - 1]),
                 startingDayOfWeek: StartingDayOfWeek.friday,
                 weekendDays: const [DateTime.friday, DateTime.saturday],
-                onDaySelected: (DateTime date, List events, List holidays) {
+                onDaySelected: (DateTime date, List periods, List holidays) {
                   setState(() {
+                    widget.updateSelectedDayPeriod(periods);
                     widget.calendarController.setSelectedDay(date);
                   });
                 },
                 builders: CalendarBuilders(
-                  dayBuilder: (context, date, eventes) => DayBuilderWidget(date: date),
-                  todayDayBuilder: (context, date, eventes) => DayBuilderWidget(date: date, dayType: 'today'),
-                  selectedDayBuilder: (context, date, eventes) => DayBuilderWidget(date: date, dayType: 'selected'),
-                  weekendDayBuilder: (context, date, eventes) => DayBuilderWidget(date: date, dayType: 'weekend'),
+                  dayBuilder: (context, date, events) => DayBuilderWidget(date: date),
+                  todayDayBuilder: (context, date, events) => DayBuilderWidget(date: date, dayType: 'today'),
+                  selectedDayBuilder: (context, date, events) => DayBuilderWidget(date: date, dayType: 'selected'),
+                  weekendDayBuilder: (context, date, events) => DayBuilderWidget(date: date, dayType: 'weekend'),
                   holidayDayBuilder: (context, date, events) => DayBuilderWidget(date: date, dayType: 'holiday'),
                   outsideDayBuilder: (context, date, events) => DayBuilderWidget(date: date, dayType: 'outside'),
                   outsideWeekendDayBuilder: (context, date, events) => DayBuilderWidget(date: date, dayType: 'weekend'),

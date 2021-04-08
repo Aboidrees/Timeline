@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:timeline/screens/Home/widgets/add_study_period.dart';
 import 'package:timeline/screens/Home/widgets/calendar_box.dart';
+import 'package:timeline/screens/timeline/timeline.dart';
+import 'package:timeline/service.dart';
 import 'package:timeline/size_config.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,36 +20,63 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   CalendarController _calendarController;
-  Map<DateTime, List<dynamic>> _events;
-  List<dynamic> _selectedEvents;
+  Map<DateTime, List<dynamic>> _periods;
+  List<dynamic> _selectedDayPeriods;
   SharedPreferences prefs;
 
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
-    _events = {};
+    _selectedDayPeriods = [];
+    _periods = {};
+    _initPrefs();
+  }
+
+  void _initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _periods = Map<DateTime, List<dynamic>>.from(decodePeriods(json.decode(prefs.getString("events") ?? "{}")));
+    });
+  }
+
+  void _updateSelectedDayPeriod(List<dynamic> selectedDayPeriods) {
+    setState(() {
+      _selectedDayPeriods = selectedDayPeriods;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     double defaultSize = SizeConfig.defaultSize;
+    _selectedDayPeriods.sort((a, b) => DateTime.parse(a['start']).compareTo(DateTime.parse(b['start'])));
+
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title), leading: Icon(Icons.menu)),
+      appBar: AppBar(
+        title: Text(widget.title),
+        leading: Icon(Icons.menu),
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            CalendarBoxWidget(calendarController: _calendarController, events: _events, selectedEvents: _selectedEvents),
+            CalendarBoxWidget(
+              calendarController: _calendarController,
+              periods: _periods,
+              updateSelectedDayPeriod: _updateSelectedDayPeriod,
+            ),
             Expanded(
               child: Container(
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(defaultSize * 2),
-                    topRight: Radius.circular(defaultSize * 2),
-                  ),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(defaultSize * 2), topRight: Radius.circular(defaultSize * 2)),
                   boxShadow: [BoxShadow(blurRadius: 2.0, color: Colors.black54)],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DayTimeline(periods: _selectedDayPeriods),
                 ),
               ),
             ),
@@ -53,52 +84,42 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // _showAddDialog(context);
-          showModalBottomSheet(
+        onPressed: () async {
+          final data = await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             builder: (context) => SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(bottom: 0),
                 child: AddPeriod(
+                  selectedPeriods: _selectedDayPeriods,
                   selectedDay: _calendarController.selectedDay,
                 ),
               ),
             ),
           );
+
+          setState(() {
+            if (data != null) {
+              (_periods.containsKey(_calendarController.selectedDay)) ? _periods[_calendarController.selectedDay].add(data) : _periods[_calendarController.selectedDay] = [data];
+              prefs.setString('events', jsonEncode(encodePeriods(_periods)));
+              _selectedDayPeriods = _periods[_calendarController.selectedDay];
+              // rebuildAllChildren(context);
+            }
+          });
         },
-        tooltip: 'Add a New Studing Period',
+        tooltip: 'Add a New Studding Period',
         child: Icon(Icons.add),
       ),
     );
   }
+
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
 }
-  // _showAddDialog(context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       content: TextField(controller: _eventController),
-  //       actions: [
-  //         // ignore: deprecated_member_use
-  //         FlatButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               if (_eventController.text.isEmpty) return;
-  //               if (_events[_calendarController.selectedDay] != null) {
-  //                 _events[_calendarController.selectedDay].add(_eventController.text);
-  //               } else {
-  //                 _events[_calendarController.selectedDay] = [_eventController.text];
-  //               }
-  //               _eventController.clear();
-  //               Navigator.pop(context);
-  //             });
-  //           },
-  //           color: primaryColor,
-  //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SizeConfig.defaultSize / 2)),
-  //           child: Text('save'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }

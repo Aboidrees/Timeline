@@ -22,6 +22,7 @@ class DayBuilderWidget extends StatelessWidget {
         date.day.toString(),
         style: TextStyle(
           fontSize: defaultSize * 2,
+          fontFamily: 'FiraCode',
           color: dayColors[dayType],
           fontWeight: ['selected', 'today'].contains(dayType) ? FontWeight.bold : FontWeight.normal,
         ),

@@ -18,3 +18,5 @@ const Map<String, Color> dayColors = {
   'weekend': Colors.red,
   'outside': Colors.grey,
 };
+
+DateTime midnight(date) => DateTime.parse("${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} 00:00:00.000Z");
