@@ -12,5 +12,6 @@
 - Expand time line on slide up.
 - Deleting period form the time line.
 - Editing Period on the time line.
+- Portrait & Landscape UI support
 
 <center><img src="assets/images/splash.png" width="50%" alt="Application Icon" /></center>
