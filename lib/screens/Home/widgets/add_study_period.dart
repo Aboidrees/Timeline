@@ -100,7 +100,8 @@ class _AddPeriodState extends State<AddPeriod> {
               maxLines: 5,
               validator: (value) => (value.isEmpty) ? "Please Enter description" : null,
               style: TextStyle(fontFamily: 'Montserrat', fontSize: defaultSize * 1.8),
-              decoration: InputDecoration(labelText: "Description", border: OutlineInputBorder(borderRadius: BorderRadius.circular(defaultSize))),
+              decoration:
+                  InputDecoration(labelText: "Description", border: OutlineInputBorder(borderRadius: BorderRadius.circular(defaultSize))),
             ),
             SizedBox(height: defaultSize * 2),
 
@@ -153,14 +154,16 @@ class _AddPeriodState extends State<AddPeriod> {
     );
   }
 
-  Map<String, DateTime> _checkPeriodOverlapping(List selectedPeriods, DateTime startTime, DateTime endTime) {
+  dynamic _checkPeriodOverlapping(List selectedPeriods, DateTime startTime, DateTime endTime) {
     for (int i = 0; i < selectedPeriods.length; i++) {
       DateTime __startTime = DateTime.parse(selectedPeriods[i]['start']);
       DateTime __endTime = DateTime.parse(selectedPeriods[i]['end']);
-      if ((startTime.isAfter(__startTime) && startTime.isBefore(__endTime)) || (endTime.isAfter(__startTime) && endTime.isBefore(__endTime))) {
+      if ((startTime.isAfter(__startTime) && startTime.isBefore(__endTime)) ||
+          (endTime.isAfter(__startTime) && endTime.isBefore(__endTime))) {
         return {'start': __startTime, 'end': __endTime};
       }
     }
+    return null;
   }
 }
 
