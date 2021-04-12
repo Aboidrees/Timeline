@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:timeline/const.dart';
-import 'package:timeline/screens/Home/home_page.dart';
+
+import 'file:///D:/FLUTTER/timeline/lib/helpers/const.dart';
+import 'file:///D:/FLUTTER/timeline/lib/screens/main_layout.dart';
 
 void main() {
   runApp(MyApp());

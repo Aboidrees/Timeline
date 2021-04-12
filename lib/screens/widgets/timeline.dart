@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:timeline/const.dart';
-import 'package:timeline/size_config.dart';
+import 'package:timeline/helpers/const.dart';
+import 'package:timeline/helpers/size_config.dart';
 import 'package:timelines/timelines.dart';
 
 class DayTimeline extends StatelessWidget {

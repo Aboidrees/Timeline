@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:timeline/const.dart';
-import 'package:timeline/size_config.dart';
+import 'package:timeline/helpers/const.dart';
+import 'package:timeline/helpers/funcs.dart';
+import 'package:timeline/helpers/size_config.dart';
 
 class AddPeriod extends StatefulWidget {
   const AddPeriod({Key key, @required this.selectedDay, @required this.selectedPeriods}) : super(key: key);
@@ -27,6 +27,7 @@ class _AddPeriodState extends State<AddPeriod> {
   Widget build(BuildContext context) {
     double defaultSize = SizeConfig.defaultSize;
     double _timePickerWidth = (SizeConfig.screenWidth / 2) - defaultSize * 5;
+
     return Container(
       color: Color(0xFF757575),
       child: Container(
@@ -45,11 +46,6 @@ class _AddPeriodState extends State<AddPeriod> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(height: defaultSize * 2),
-            // Text(
-            //   "Add Study Period",
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(fontSize: defaultSize * 2, fontWeight: FontWeight.bold, color: primaryColor),
-            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -100,8 +96,7 @@ class _AddPeriodState extends State<AddPeriod> {
               maxLines: 5,
               validator: (value) => (value.isEmpty) ? "Please Enter description" : null,
               style: TextStyle(fontFamily: 'Montserrat', fontSize: defaultSize * 1.8),
-              decoration:
-                  InputDecoration(labelText: "Description", border: OutlineInputBorder(borderRadius: BorderRadius.circular(defaultSize))),
+              decoration: InputDecoration(labelText: "Description", border: OutlineInputBorder(borderRadius: BorderRadius.circular(defaultSize))),
             ),
             SizedBox(height: defaultSize * 2),
 
@@ -110,29 +105,29 @@ class _AddPeriodState extends State<AddPeriod> {
               color: primaryColor,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(defaultSize)),
               onPressed: () {
-                var checkResult = _checkPeriodOverlapping(widget.selectedPeriods, _startTime, _endTime);
+                var checkResult = checkPeriodOverlapping(widget.selectedPeriods, _startTime, _endTime);
 
                 if (checkResult != null) {
                   showDialog(
                     context: context,
-                    builder: (BuildContext context) => SimpleDialog(
+                    builder: (BuildContext context) => ErrorMessage(
                         'The selected period is overlapping with ${checkResult['start'].hour.toString().padLeft(2, '0')}:${checkResult['start'].minute.toString().padLeft(2, '0')}   to   ${checkResult['end'].hour.toString().padLeft(2, '0')}:${checkResult['end'].minute.toString().padLeft(2, '0')}'),
                   );
                   return false;
                 }
 
                 if (DateTimeRange(start: _startTime, end: _endTime).duration.inMinutes < 1) {
-                  showDialog(context: context, builder: (BuildContext context) => SimpleDialog('Start time is less than End time'));
+                  showDialog(context: context, builder: (BuildContext context) => ErrorMessage('Start time is less than End time'));
                   return false;
                 }
 
                 if (_titleController.text.isEmpty) {
-                  showDialog(context: context, builder: (BuildContext context) => SimpleDialog('period title should not be empty'));
+                  showDialog(context: context, builder: (BuildContext context) => ErrorMessage('period title should not be empty'));
                   return false;
                 }
 
                 if (_descController.text.isEmpty) {
-                  showDialog(context: context, builder: (BuildContext context) => SimpleDialog('period desc should not be empty'));
+                  showDialog(context: context, builder: (BuildContext context) => ErrorMessage('period desc should not be empty'));
                   return false;
                 }
                 // return false;
@@ -151,38 +146,6 @@ class _AddPeriodState extends State<AddPeriod> {
           ],
         ),
       ),
-    );
-  }
-
-  dynamic _checkPeriodOverlapping(List selectedPeriods, DateTime startTime, DateTime endTime) {
-    for (int i = 0; i < selectedPeriods.length; i++) {
-      DateTime __startTime = DateTime.parse(selectedPeriods[i]['start']);
-      DateTime __endTime = DateTime.parse(selectedPeriods[i]['end']);
-      if ((startTime.isAfter(__startTime) && startTime.isBefore(__endTime)) ||
-          (endTime.isAfter(__startTime) && endTime.isBefore(__endTime))) {
-        return {'start': __startTime, 'end': __endTime};
-      }
-    }
-    return null;
-  }
-}
-
-class SimpleDialog extends StatelessWidget {
-  final message;
-  SimpleDialog(this.message);
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      //title: Text('Alert'),
-
-      content: Container(
-        height: SizeConfig.screenHeight / 12,
-        child: Center(child: Text(message, textAlign: TextAlign.center)),
-      ),
-      actions: <Widget>[
-        // usually buttons at the bottom of the dialog
-        TextButton(child: Icon(Icons.close, color: primaryColor), onPressed: () => Navigator.of(context).pop()),
-      ],
     );
   }
 }

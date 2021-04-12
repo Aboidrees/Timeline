@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:timeline/screens/Home/widgets/add_study_period.dart';
-import 'package:timeline/screens/Home/widgets/calendar_box.dart';
-import 'package:timeline/screens/timeline/timeline.dart';
-import 'package:timeline/service.dart';
-import 'package:timeline/size_config.dart';
+import 'package:timeline/helpers/funcs.dart';
+import 'package:timeline/helpers/size_config.dart';
+import 'package:timeline/screens/widgets/add_study_period.dart';
+import 'package:timeline/screens/widgets/calendar_box.dart';
+import 'package:timeline/screens/widgets/timeline.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);

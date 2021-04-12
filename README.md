@@ -1,16 +1,16 @@
-# timeline
+# Timeline
 
-A new Flutter project.
 
-## Getting Started
+## Features
+### Currently supported
+-Display calendar with the today date
+-Add a new studding period
+-Display a marker contains number of studding periods
+-Display day time line when the day is selected.
 
-This project is a starting point for a Flutter application.
+### Planning to support
+-Expand time line on slide up.
+-Deleting period form the time line.
+-Editing Period on the time line.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="assets/images/splash.png" alt="Application Icon" />

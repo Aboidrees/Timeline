@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:timeline/const.dart';
-import 'package:timeline/screens/Home/widgets/day_builder.dart';
-import 'package:timeline/size_config.dart';
+import 'package:timeline/helpers/const.dart';
+import 'package:timeline/helpers/size_config.dart';
+import 'package:timeline/screens/widgets/day_builder.dart';
 
 class CalendarBoxWidget extends StatefulWidget {
   const CalendarBoxWidget({
@@ -26,6 +26,7 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
   @override
   Widget build(BuildContext context) {
     DateTime selectedDay = widget.calendarController.selectedDay ?? DateTime.now();
+
     double defaultSize = SizeConfig.defaultSize;
 
     return Column(
@@ -57,10 +58,12 @@ class _CalendarBoxWidgetState extends State<CalendarBoxWidget> {
                 events: widget.periods,
                 calendarController: widget.calendarController,
                 initialCalendarFormat: CalendarFormat.month,
+                formatAnimation: FormatAnimation.scale,
+                availableCalendarFormats: {CalendarFormat.month: "Month"},
                 headerStyle: HeaderStyle(
                   centerHeaderTitle: true,
-                  titleTextStyle: TextStyle(color: primaryColor, fontSize: defaultSize * 2.6),
                   formatButtonVisible: false,
+                  titleTextStyle: TextStyle(color: primaryColor, fontSize: defaultSize * 2.6),
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(dowTextBuilder: (weekDay, locale) => weekDays[0][weekDay.weekday - 1]),
                 startingDayOfWeek: StartingDayOfWeek.friday,
