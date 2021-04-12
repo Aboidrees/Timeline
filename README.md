@@ -13,4 +13,6 @@
 -Deleting period form the time line.
 -Editing Period on the time line.
 
-<img src="assets/images/splash.png" alt="Application Icon" />
+<div style="text-align:center">
+    <img src="assets/images/splash.png" width="50%" alt="Application Icon" />
+</div>
